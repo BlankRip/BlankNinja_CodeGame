@@ -11,10 +11,12 @@ namespace  Blank.Gameplay.Player
 
         private PlayerInput playerInput;
         private InputAction moveAction;
+        private InputAction jumpAction;
 
         private void Start() {
             playerInput = Input.GetPlayerInput();
             moveAction = playerInput.actions["Move"];
+            jumpAction = playerInput.actions["Jump"];
 
             if(playerMovement == null)
             {
@@ -27,6 +29,7 @@ namespace  Blank.Gameplay.Player
         private void Update() {
             Vector2 moveData = moveAction.ReadValue<Vector2>();
             playerMovement.HandleMovement(moveData.x, moveData.y);
+            playerMovement.HandleJump(jumpAction.WasPressedThisFrame());
         }
     }
 }
