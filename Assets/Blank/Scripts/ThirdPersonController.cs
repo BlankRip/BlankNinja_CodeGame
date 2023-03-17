@@ -10,9 +10,11 @@ namespace  Blank.Gameplay.Player
         [SerializeField] ThirdPersonMovement playerMovement;
 
         private PlayerInput playerInput;
+        private InputAction moveAction;
 
         private void Start() {
             playerInput = Input.GetPlayerInput();
+            moveAction = playerInput.actions["Move"];
 
             if(playerMovement == null)
             {
@@ -23,7 +25,8 @@ namespace  Blank.Gameplay.Player
         }
 
         private void Update() {
-            
+            Vector2 moveData = moveAction.ReadValue<Vector2>();
+            playerMovement.HandleMovement(moveData.x, moveData.y);
         }
     }
 }

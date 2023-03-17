@@ -17,8 +17,8 @@ namespace Blank.Gameplay.Player
 
         public void HandleMovement(float horizontalInput, float verticalInput)
         {
-            Vector3 move =  (transform.right * horizontalInput) + (transform.forward * verticalInput);
-            cc.Move(move);
+            Vector3 moveDir =  (transform.right * horizontalInput) + (transform.forward * verticalInput);
+            cc.Move(moveDir * speed * Time.deltaTime);
         }
     }
 }

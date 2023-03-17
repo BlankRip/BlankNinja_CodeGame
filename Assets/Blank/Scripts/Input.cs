@@ -19,7 +19,7 @@ namespace Blank
         }
 
         private void Awake() {
-            playerInput.GetComponent<PlayerInput>();
+            playerInput = GetComponent<PlayerInput>();
         }
     }
 }
