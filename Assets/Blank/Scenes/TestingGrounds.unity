@@ -988,10 +988,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 10
   sprintSpeed: 20
-  useMuliplierForSprint: 1
+  useMuliplierForSprint: 0
   sprintMultiplier: 1.5
   gravity: -24
   jumpHight: 3
+  maxJumps: 2
 --- !u!114 &1591976876
 MonoBehaviour:
   m_ObjectHideFlags: 0

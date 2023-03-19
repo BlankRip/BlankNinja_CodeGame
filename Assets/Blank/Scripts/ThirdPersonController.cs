@@ -33,7 +33,7 @@ namespace  Blank.Gameplay.Player
             playerMovement.HandleSprint(sprintAction);
             playerMovement.HandleMovement(moveData.x, moveData.y);
             playerMovement.HandleGravity();
-            playerMovement.HandleJump(jumpAction.WasPressedThisFrame());
+            playerMovement.HandleMulitpleJumps(jumpAction.WasPressedThisFrame());
         }
     }
 }

@@ -19,11 +19,13 @@ namespace Blank.Gameplay.Player
         [SerializeField] private float gravity = -18.2f;
         [Header("Jump")]
         [SerializeField] private float jumpHight = 5.0f;
+        [SerializeField] private int maxJumps = 1;
 
         private CharacterController cc;
         private Vector3 gravityVelocity;
         private bool grounded;
         private float currentSpeed;
+        private int jumpsPerformed;
 
         private void Start() {
             cc = GetComponent<CharacterController>();
@@ -31,6 +33,8 @@ namespace Blank.Gameplay.Player
                 Debug.LogError("The Charactor Controller is missing");
             if(gravity > 0)
                 gravity *= -1.0f;
+            if(maxJumps < 1)
+                maxJumps = 1;
             SetNewSprintMultiplayer();
             currentSpeed = speed;
         }
@@ -79,6 +83,18 @@ namespace Blank.Gameplay.Player
             {
                 if(grounded)
                     gravityVelocity.y = Mathf.Sqrt(-2 * gravity * jumpHight);
+            }
+        }
+
+        public void HandleMulitpleJumps(bool jump)
+        {
+            if(grounded)
+                jumpsPerformed = 0;
+
+            if(jumpsPerformed < maxJumps && jump)
+            {
+                gravityVelocity.y = Mathf.Sqrt(-2 * gravity * jumpHight);
+                jumpsPerformed++;
             }
         }
     }
