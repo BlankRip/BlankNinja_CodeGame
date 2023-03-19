@@ -987,6 +987,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 10
+  sprintSpeed: 20
+  useMuliplierForSprint: 1
+  sprintMultiplier: 1.5
   gravity: -24
   jumpHight: 3
 --- !u!114 &1591976876
