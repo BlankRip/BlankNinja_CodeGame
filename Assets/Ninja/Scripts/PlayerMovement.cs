@@ -16,11 +16,15 @@ namespace Ninja
 		private InputAction sprintAction;
 		
 		private float currentSpeed;
+		private int jumpCounter;
 
 		[SerializeField] private float moveSpeed;
 		[SerializeField] private float sprintSpeed;
 		[SerializeField] private float gravity;
 		[SerializeField] private float jumpHeight;
+		[SerializeField] private int maxJumps;
+
+
 
 		private bool isGrounded;
 		private float horizontalInput, verticalInput;
@@ -86,11 +90,19 @@ namespace Ninja
 
 		public void Jump()
 		{
-			if(jumpAction.WasPressedThisFrame() && isGrounded)
+			if(jumpAction.WasPressedThisFrame() && (isGrounded || jumpCounter < maxJumps))
 			{
 				gravityVector.y += Mathf.Sqrt(jumpHeight * -2 * gravity);
+				jumpCounter++;
 			}
-			gravityVector.y += gravity * Time.deltaTime;
+			else if(!isGrounded)
+			{
+				gravityVector.y += gravity * Time.deltaTime;
+			}
+			else
+			{
+				jumpCounter = 0;
+			}
 			_characterController.Move(gravityVector * Time.deltaTime);
 		}
 	}

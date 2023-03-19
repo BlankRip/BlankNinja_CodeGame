@@ -410,11 +410,19 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2884942653541852984, guid: 68d1e72fe00df1546b7ba156697a5c98, type: 3}
       propertyPath: gravity
-      value: -24
+      value: 24
+      objectReference: {fileID: 0}
+    - target: {fileID: 2884942653541852984, guid: 68d1e72fe00df1546b7ba156697a5c98, type: 3}
+      propertyPath: maxJumps
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2884942653541852984, guid: 68d1e72fe00df1546b7ba156697a5c98, type: 3}
       propertyPath: jumpHeight
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2884942653541852984, guid: 68d1e72fe00df1546b7ba156697a5c98, type: 3}
+      propertyPath: sprintSpeed
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 2884942653541852984, guid: 68d1e72fe00df1546b7ba156697a5c98, type: 3}
       propertyPath: gravityMulitplier
@@ -427,6 +435,10 @@ PrefabInstance:
     - target: {fileID: 2884942653541852984, guid: 68d1e72fe00df1546b7ba156697a5c98, type: 3}
       propertyPath: groundMask.m_Bits
       value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: 2884942653541852984, guid: 68d1e72fe00df1546b7ba156697a5c98, type: 3}
+      propertyPath: sprintSpeedChange
+      value: 1.2
       objectReference: {fileID: 0}
     - target: {fileID: 3443890041441565232, guid: 68d1e72fe00df1546b7ba156697a5c98, type: 3}
       propertyPath: gravityMulitplier
