@@ -12,8 +12,11 @@ namespace Blank.Gameplay.Player
 
         [Header("Sprint Data")]
         [SerializeField] private float sprintSpeed = 20.0f;
-        [SerializeField] bool useMuliplierForSprint;
-        [SerializeField] [Range(1.0f, 4.0f)] float sprintMultiplier = 1.0f;
+        [SerializeField] private bool useMuliplierForSprint;
+        [SerializeField] [Range(1.0f, 4.0f)] private float sprintMultiplier = 1.0f;
+        [SerializeField] private bool useAccleration;
+        [SerializeField] private float accleration = 1.0f;
+        [SerializeField] private float decleration = 1.0f;
 
         [Header("Gravity")]
         [SerializeField] private float gravity = -18.2f;
@@ -26,6 +29,8 @@ namespace Blank.Gameplay.Player
         private bool grounded;
         private float currentSpeed;
         private int jumpsPerformed;
+        private float targetSpeed;
+        private Vector2 moveInput;
 
         private void Start() {
             cc = GetComponent<CharacterController>();
@@ -36,23 +41,31 @@ namespace Blank.Gameplay.Player
             if(maxJumps < 1)
                 maxJumps = 1;
             SetNewSprintMultiplayer();
-            currentSpeed = speed;
+            ChangeCurrentSpeed(ref speed);
         }
 
-        public void HandleSprint(bool sprinting)
+        public void HandleSprint(bool keyPressed, bool keyReleased)
         {
-            if(sprinting)
-                currentSpeed = sprintSpeed;
-            else
-                currentSpeed = speed;
+            if(keyPressed)
+                ChangeCurrentSpeed(ref sprintSpeed);
+            if(keyReleased)
+                ChangeCurrentSpeed(ref speed);
         }
 
         public void HandleSprint(InputAction sprintAction)
         {
             if(sprintAction.WasPressedThisFrame())
-                currentSpeed = sprintSpeed;
+                ChangeCurrentSpeed(ref sprintSpeed);
             if(sprintAction.WasReleasedThisFrame())
-                currentSpeed = speed;
+                ChangeCurrentSpeed(ref speed);
+        }
+
+        private void ChangeCurrentSpeed(ref float newSpeed)
+        {
+            if(useAccleration)
+                targetSpeed = newSpeed;
+            else
+                currentSpeed = newSpeed;
         }
 
         public void SetNewSprintMultiplayer()
@@ -63,8 +76,19 @@ namespace Blank.Gameplay.Player
 
         public void HandleMovement(float horizontalInput, float verticalInput)
         {
+            if(horizontalInput == 0 && verticalInput == 0 && currentSpeed > 0.02f)
+            {
+                currentSpeed = Mathf.Lerp(currentSpeed, 0, decleration * Time.deltaTime);
+                horizontalInput = moveInput.x;
+                verticalInput = moveInput.y;
+            }
+            else
+                currentSpeed = Mathf.Lerp(currentSpeed, targetSpeed, accleration * Time.deltaTime);
+            
             Vector3 moveDir =  (transform.right * horizontalInput) + (transform.forward * verticalInput);
             cc.Move(moveDir * currentSpeed * Time.deltaTime);
+            moveInput.x = horizontalInput;
+            moveInput.y = verticalInput;
         }
 
         public void HandleGravity()

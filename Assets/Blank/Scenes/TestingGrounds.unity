@@ -990,6 +990,9 @@ MonoBehaviour:
   sprintSpeed: 20
   useMuliplierForSprint: 0
   sprintMultiplier: 1.5
+  useAccleration: 1
+  accleration: 1.5
+  decleration: 3
   gravity: -24
   jumpHight: 3
   maxJumps: 2
