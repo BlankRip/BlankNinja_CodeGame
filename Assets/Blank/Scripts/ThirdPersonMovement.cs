@@ -12,11 +12,14 @@ namespace Blank.Gameplay.Player
 
         [Header("Sprint Data")]
         [SerializeField] private float sprintSpeed = 20.0f;
+        [Space]
         [SerializeField] private bool useMuliplierForSprint;
         [SerializeField] [Range(1.0f, 4.0f)] private float sprintMultiplier = 1.0f;
+        [Space]
         [SerializeField] private bool useAccleration;
         [SerializeField] private float accleration = 8.0f;
-        //[SerializeField] private float decleration = 15.0f;
+        [SerializeField] private bool useDecleration;
+        [SerializeField] private float decleration = 15.0f;
 
         [Header("Gravity")]
         [SerializeField] private float gravity = -18.2f;
@@ -30,6 +33,7 @@ namespace Blank.Gameplay.Player
         private float currentSpeed;
         private int jumpsPerformed;
         private float targetSpeed;
+        private Vector2 moveInput;
 
         private void Start() {
             cc = GetComponent<CharacterController>();
@@ -78,6 +82,8 @@ namespace Blank.Gameplay.Player
             HandleAccleration(ref horizontalInput, ref verticalInput);
             Vector3 moveDir =  (transform.right * horizontalInput) + (transform.forward * verticalInput);
             cc.Move(moveDir * currentSpeed * Time.deltaTime);
+            moveInput.x = horizontalInput;
+            moveInput.y = verticalInput;
         }
 
         private void HandleAccleration(ref float horizontalInput, ref float verticalInput)
@@ -87,12 +93,15 @@ namespace Blank.Gameplay.Player
 
             if(horizontalInput == 0 && verticalInput == 0 && currentSpeed > 0.02f)
             {
+                if(useDecleration)
+                {
+                    currentSpeed -= decleration * Time.deltaTime;
+                    if(currentSpeed < 0.0f)
+                        currentSpeed = 0;
+                    horizontalInput = moveInput.x;
+                    verticalInput = moveInput.y;
+                }
                 currentSpeed = 0.0f;
-                // currentSpeed -= decleration * Time.deltaTime;
-                // if(currentSpeed < 0.0f)
-                //     currentSpeed = 0;
-                // horizontalInput = moveInput.x;
-                // verticalInput = moveInput.y;
             }
             else
             {
