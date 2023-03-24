@@ -15,8 +15,8 @@ namespace Blank.Gameplay.Player
         [SerializeField] private bool useMuliplierForSprint;
         [SerializeField] [Range(1.0f, 4.0f)] private float sprintMultiplier = 1.0f;
         [SerializeField] private bool useAccleration;
-        [SerializeField] private float accleration = 1.0f;
-        [SerializeField] private float decleration = 1.0f;
+        [SerializeField] private float accleration = 8.0f;
+        //[SerializeField] private float decleration = 15.0f;
 
         [Header("Gravity")]
         [SerializeField] private float gravity = -18.2f;
@@ -30,7 +30,6 @@ namespace Blank.Gameplay.Player
         private float currentSpeed;
         private int jumpsPerformed;
         private float targetSpeed;
-        private Vector2 moveInput;
 
         private void Start() {
             cc = GetComponent<CharacterController>();
@@ -76,19 +75,31 @@ namespace Blank.Gameplay.Player
 
         public void HandleMovement(float horizontalInput, float verticalInput)
         {
-            if(horizontalInput == 0 && verticalInput == 0 && currentSpeed > 0.02f)
-            {
-                currentSpeed = Mathf.Lerp(currentSpeed, 0, decleration * Time.deltaTime);
-                horizontalInput = moveInput.x;
-                verticalInput = moveInput.y;
-            }
-            else
-                currentSpeed = Mathf.Lerp(currentSpeed, targetSpeed, accleration * Time.deltaTime);
-            
+            HandleAccleration(ref horizontalInput, ref verticalInput);
             Vector3 moveDir =  (transform.right * horizontalInput) + (transform.forward * verticalInput);
             cc.Move(moveDir * currentSpeed * Time.deltaTime);
-            moveInput.x = horizontalInput;
-            moveInput.y = verticalInput;
+        }
+
+        private void HandleAccleration(ref float horizontalInput, ref float verticalInput)
+        {
+            if(!useAccleration)
+                return;
+
+            if(horizontalInput == 0 && verticalInput == 0 && currentSpeed > 0.02f)
+            {
+                currentSpeed = 0.0f;
+                // currentSpeed -= decleration * Time.deltaTime;
+                // if(currentSpeed < 0.0f)
+                //     currentSpeed = 0;
+                // horizontalInput = moveInput.x;
+                // verticalInput = moveInput.y;
+            }
+            else
+            {
+                currentSpeed += accleration * Time.deltaTime;
+                if(currentSpeed > targetSpeed)
+                    currentSpeed = targetSpeed;
+            }
         }
 
         public void HandleGravity()
