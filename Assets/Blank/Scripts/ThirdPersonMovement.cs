@@ -16,24 +16,26 @@ namespace Blank.Gameplay.Player
         [SerializeField] private bool useMuliplierForSprint;
         [SerializeField] [Range(1.0f, 4.0f)] private float sprintMultiplier = 1.0f;
         [Space]
-        [SerializeField] private bool useAccleration;
-        [SerializeField] private float accleration = 8.0f;
-        [SerializeField] private bool useDecleration;
-        [SerializeField] private float decleration = 15.0f;
+        
+        [Header("Drag AKA Accleration & Deceleration")]
+        [SerializeField] bool useDrag = false;
+        [SerializeField] float dragCoefficient = 5f;
+        [Range(0.1f, 3.0f)] [SerializeField] float acclearion = 0.7f;
 
         [Header("Gravity")]
         [SerializeField] private float gravity = -18.2f;
+        [Space]
+        
         [Header("Jump")]
         [SerializeField] private float jumpHight = 5.0f;
         [SerializeField] private int maxJumps = 1;
 
         private CharacterController cc;
+        private Vector3 directionalVelocity;
         private Vector3 gravityVelocity;
         private bool grounded;
         private float currentSpeed;
         private int jumpsPerformed;
-        private float targetSpeed;
-        private Vector2 moveInput;
 
         private void Start() {
             cc = GetComponent<CharacterController>();
@@ -65,10 +67,7 @@ namespace Blank.Gameplay.Player
 
         private void ChangeCurrentSpeed(ref float newSpeed)
         {
-            if(useAccleration)
-                targetSpeed = newSpeed;
-            else
-                currentSpeed = newSpeed;
+            currentSpeed = newSpeed;
         }
 
         public void SetNewSprintMultiplayer()
@@ -79,36 +78,28 @@ namespace Blank.Gameplay.Player
 
         public void HandleMovement(float horizontalInput, float verticalInput)
         {
-            HandleAccleration(ref horizontalInput, ref verticalInput);
             Vector3 moveDir =  (transform.right * horizontalInput) + (transform.forward * verticalInput);
-            cc.Move(moveDir * currentSpeed * Time.deltaTime);
-            moveInput.x = horizontalInput;
-            moveInput.y = verticalInput;
+            if(useDrag)
+                HandleDrag(ref moveDir);
+            else
+                directionalVelocity = moveDir * currentSpeed * Time.deltaTime;
+            cc.Move(directionalVelocity);
         }
 
-        private void HandleAccleration(ref float horizontalInput, ref float verticalInput)
+        private void HandleDrag(ref Vector3 moveDir)
         {
-            if(!useAccleration)
-                return;
+            Vector3 linerDragForce = directionalVelocity * dragCoefficient;
+            directionalVelocity -= linerDragForce * Time.deltaTime;
+            directionalVelocity += moveDir * acclearion * Time.deltaTime;
+            ClampVelocity();
+        }
 
-            if(horizontalInput == 0 && verticalInput == 0 && currentSpeed > 0.02f)
-            {
-                if(useDecleration)
-                {
-                    currentSpeed -= decleration * Time.deltaTime;
-                    if(currentSpeed < 0.0f)
-                        currentSpeed = 0;
-                    horizontalInput = moveInput.x;
-                    verticalInput = moveInput.y;
-                }
-                currentSpeed = 0.0f;
-            }
-            else
-            {
-                currentSpeed += accleration * Time.deltaTime;
-                if(currentSpeed > targetSpeed)
-                    currentSpeed = targetSpeed;
-            }
+        private void ClampVelocity()
+        {
+            if(directionalVelocity.magnitude > currentSpeed)
+                directionalVelocity = directionalVelocity.normalized * currentSpeed;
+            else if (directionalVelocity.magnitude < 0)
+                directionalVelocity = Vector3.zero;
         }
 
         public void HandleGravity()
