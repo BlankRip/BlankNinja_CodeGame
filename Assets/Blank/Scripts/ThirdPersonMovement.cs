@@ -44,28 +44,23 @@ namespace Blank.Gameplay.Player
             if(maxJumps < 1)
                 maxJumps = 1;
             SetNewSprintMultiplayer();
-            ChangeCurrentSpeed(ref speed);
+            currentSpeed = speed;
         }
 
         public void HandleSprint(bool keyPressed, bool keyReleased)
         {
             if(keyPressed)
-                ChangeCurrentSpeed(ref sprintSpeed);
+                currentSpeed = sprintSpeed;
             if(keyReleased)
-                ChangeCurrentSpeed(ref speed);
+                currentSpeed = speed;
         }
 
         public void HandleSprint(InputAction sprintAction)
         {
             if(sprintAction.WasPressedThisFrame())
-                ChangeCurrentSpeed(ref sprintSpeed);
+                currentSpeed =  sprintSpeed;
             if(sprintAction.WasReleasedThisFrame())
-                ChangeCurrentSpeed(ref speed);
-        }
-
-        private void ChangeCurrentSpeed(ref float newSpeed)
-        {
-            currentSpeed = newSpeed;
+                currentSpeed = speed;
         }
 
         public void SetNewSprintMultiplayer()
