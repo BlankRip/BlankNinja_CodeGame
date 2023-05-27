@@ -24,8 +24,6 @@ namespace Blank.Gameplay.Player
 
         [Header("Gravity")]
         [SerializeField] private float gravity = -18.2f;
-        [Space]
-        
         [Header("Jump")]
         [SerializeField] private float jumpHight = 5.0f;
         [SerializeField] private int maxJumps = 1;
