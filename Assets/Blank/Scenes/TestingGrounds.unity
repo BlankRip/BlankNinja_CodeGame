@@ -987,6 +987,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 10
+  rotateAndAlwaysMoveForward: 0
+  rotationSpeed: 100
   sprintSpeed: 20
   useMuliplierForSprint: 0
   sprintMultiplier: 1.5

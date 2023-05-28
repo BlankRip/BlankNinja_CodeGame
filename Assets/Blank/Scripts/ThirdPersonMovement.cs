@@ -9,6 +9,8 @@ namespace Blank.Gameplay.Player
     {
         [Header("Standard Movement Data")]
         [SerializeField] private float speed = 10.0f;
+        [SerializeField] private bool rotateAndAlwaysMoveForward;
+        [SerializeField] private float rotationSpeed = 25.0f;
 
         [Header("Sprint Data")]
         [SerializeField] private float sprintSpeed = 20.0f;
@@ -71,12 +73,31 @@ namespace Blank.Gameplay.Player
 
         public void HandleMovement(float horizontalInput, float verticalInput)
         {
-            Vector3 moveDir =  (transform.right * horizontalInput) + (transform.forward * verticalInput);
-            if(useDrag)
-                HandleDrag(ref moveDir);
+            if(rotateAndAlwaysMoveForward)
+            {
+                if(horizontalInput != 0 || verticalInput != 0)
+                {
+                    Vector3 moveDir =  new Vector3(horizontalInput, 0, verticalInput);
+
+                    Quaternion targetRotation = Quaternion.LookRotation(moveDir);
+                    transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+                    Vector3 forward = transform.forward;
+                    if(useDrag)
+                        HandleDrag(ref forward);
+                    else
+                        directionalVelocity = forward * currentSpeed * Time.deltaTime;
+                    cc.Move(directionalVelocity);
+                }
+            }
             else
-                directionalVelocity = moveDir * currentSpeed * Time.deltaTime;
-            cc.Move(directionalVelocity);
+            {
+                Vector3 moveDir =  (transform.right * horizontalInput) + (transform.forward * verticalInput);
+                if(useDrag)
+                    HandleDrag(ref moveDir);
+                else
+                    directionalVelocity = moveDir * currentSpeed * Time.deltaTime;
+                cc.Move(directionalVelocity);
+            }
         }
 
         private void HandleDrag(ref Vector3 moveDir)
